@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asif Mahmud — Video Editor & Motion Designer</title>
+    
+    <meta name="description" content="Portfolio of Asif Mahmud, a professional Video Editor and Motion Designer specializing in cinematic edits, commercials, and motion graphics.">
+    <meta property="og:title" content="Asif Mahmud — Video Editor & Motion Designer">
+    <meta property="og:description" content="I turn raw footage into stories worth watching. Explore my creative reel and selected projects.">
+    <meta property="og:type" content="website">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ==========================================================================
+           1. CSS VARIABLES & RESET
+           ========================================================================== */
+        :root {
+            --bg: #050505;
+            --surface: #0d0d0d;
+            --surface-light: #151515;
+            --text: #ffffff;
+            --muted: #888888;
+            --accent: #ff0000;
+            --accent-glow: rgba(255, 0, 0, 0.25);
+            --border: #292929;
+            --glass: rgba(13, 13, 13, 0.75);
+            --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-display: 'Space Grotesk', sans-serif;
+            --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: var(--font-main);
+            overflow-x: hidden;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            position: relative;
+            background-color: var(--bg);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Technical Background Grid */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        canvas#particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        img, video {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            outline: none;
+            background: none;
+            font-family: inherit;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
+
+        /* Utility Classes */
+        .container {
+            width: 100%;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .section-padding {
+            padding: 8rem 0;
+        }
+
+        .accent-text {
+            color: var(--accent);
+        }
+
+        .mono {
+            font-family: var(--font-display);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Fade/Scroll Reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ==========================================================================
+           2. NAVIGATION
+           ========================================================================== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            transition: var(--transition-smooth);
+            padding: 1.5rem 0;
+        }
+
+        .navbar.scrolled {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+        }
+
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent);
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 8px var(--accent);
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+        }
+
+        .nav-link {
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            color: var(--muted);
+            transition: var(--transition-smooth);
+            position: relative;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--text);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background-color: var(--accent);
+            transition: var(--transition-smooth);
+        }
+
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+
+        .nav-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            padding: 6px 12px;
+            border-radius: 20px;
+            color: var(--muted);
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background-color: #00ff66;
+            border-radius: 50%;
+            box-shadow: 0 0 6px #00ff66;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 0.8rem 1.8rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            border-radius: 2px;
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background-color: var(--text);
+            color: var(--bg);
+            border: 1px solid var(--text);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent);
+            color: var(--text);
+            border-color: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(255, 0, 0, 0.05);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            z-index: 101;
+        }
+
+        .hamburger span {
+            width: 28px;
+            height: 2px;
+            background-color: var(--text);
+            transition: var(--transition-smooth);
+        }
+
+        /* ==========================================================================
+           3. HERO SECTION
+           ========================================================================== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: 6rem;
+            position: relative;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: var(--accent);
+            background: rgba(255, 0, 0, 0.08);
+            border: 1px solid rgba(255, 0, 0, 0.2);
+            padding: 6px 14px;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 700;
+            line-height: 1.05;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            color: var(--muted);
+            margin-bottom: 2rem;
+            font-weight: 400;
+            max-width: 500px;
+        }
+
+        .hero-ctas {
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        /* Camera Frame / Monitor Effect */
+        .camera-frame-wrapper {
+            position: relative;
+            padding: 12px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
+
+        .camera-frame {
+            position: relative;
+            overflow: hidden;
+            border-radius: 2px;
+            aspect-ratio: 4/5;
+            background: var(--surface-light);
+        }
+
+        .camera-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(20%) contrast(105%);
+            transition: var(--transition-smooth);
+        }
+
+        .camera-frame-wrapper:hover .camera-frame img {
+            filter: grayscale(0%) contrast(100%);
+            transform: scale(1.03);
+        }
+
+        /* Monitor HUD Overlay */
+        .hud-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: radial-gradient(circle, transparent 60%, rgba(0,0,0,0.4) 100%);
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .hud-top, .hud-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .hud-rec {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .hud-rec-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent);
+            border-radius: 50%;
+            animation: pulse 1s infinite;
+        }
+
+        .hud-corners::before, .hud-corners::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border-color: rgba(255, 255, 255, 0.4);
+            border-style: solid;
+        }
+
+        .hud-corners::before {
+            top: 12px;
+            left: 12px;
+            border-width: 2px 0 0 2px;
+        }
+
+        .hud-corners::after {
+            bottom: 12px;
+            right: 12px;
+            border-width: 0 2px 2px 0;
+        }
+
+        /* ==========================================================================
+           4. SECTION HEADINGS
+           ========================================================================== */
+        .section-header {
+            margin-bottom: 4rem;
+        }
+
+        .section-tag {
+            font-size: 0.8rem;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 3.5vw, 3rem);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+        }
+
+        /* ==========================================================================
+           5. WORK / PORTFOLIO SECTION
+           ========================================================================== */
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 2rem;
+        }
+
+        .project-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            transition: var(--transition-smooth);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-card:hover {
+            border-color: rgba(255, 0, 0, 0.5);
+            transform: translateY(-6px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+        }
+
+        .project-thumb {
+            position: relative;
+            aspect-ratio: 16/9;
+            overflow: hidden;
+            background: var(--surface-light);
+        }
+
+        .project-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition-smooth);
+        }
+
+        .project-card:hover .project-thumb img {
+            transform: scale(1.08);
+        }
+
+        .project-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(5, 5, 5, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: var(--transition-smooth);
+            backdrop-filter: blur(4px);
+        }
+
+        .project-card:hover .project-overlay {
+            opacity: 1;
+        }
+
+        .play-btn {
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: scale(0.8);
+            transition: var(--transition-smooth);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .project-card:hover .play-btn {
+            transform: scale(1);
+        }
+
+        .project-info {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .project-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .project-title {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .project-desc {
+            font-size: 0.88rem;
+            color: var(--muted);
+            margin-bottom: 1.25rem;
+            line-height: 1.5;
+        }
+
+        .project-tech {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: auto;
+        }
+
+        .tech-tag {
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            background: var(--surface-light);
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            color: var(--muted);
+        }
+
+        /* ==========================================================================
+           6. SHOWREEL SECTION
+           ========================================================================== */
+        .showreel-box {
+            position: relative;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            background: var(--surface);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+        }
+
+        .video-container {
+            position: relative;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            background: #000;
+        }
+
+        .video-container iframe, 
+        .video-container video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .monitor-bar {
+            background: var(--surface-light);
+            border-top: 1px solid var(--border);
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: var(--font-display);
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        /* ==========================================================================
+           7. ABOUT & STATS SECTION
+           ========================================================================== */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-text p {
+            font-size: 1.1rem;
+            color: var(--muted);
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 2rem;
+            border-radius: 4px;
+            text-align: center;
+            transition: var(--transition-smooth);
+        }
+
+        .stat-card:hover {
+            border-color: var(--accent);
+            background: var(--surface-light);
+        }
+
+        .stat-number {
+            font-family: var(--font-display);
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--text);
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--muted);
+            letter-spacing: 1px;
+        }
+
+        /* ==========================================================================
+           8. SKILLS SECTION
+           ========================================================================== */
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .skill-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 1rem 1.5rem;
+            border-radius: 4px;
+            font-family: var(--font-display);
+            font-size: 0.95rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition-smooth);
+        }
+
+        .skill-card:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.1);
+        }
+
+        /* ==========================================================================
+           9. SERVICES SECTION
+           ========================================================================== */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .service-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 2.5rem 1.8rem;
+            border-radius: 4px;
+            transition: var(--transition-smooth);
+            position: relative;
+        }
+
+        .service-card:hover {
+            border-color: var(--accent);
+            background: var(--surface-light);
+            transform: translateY(-4px);
+        }
+
+        .service-num {
+            font-family: var(--font-display);
+            font-size: 0.8rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .service-title {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .service-desc {
+            font-size: 0.88rem;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        /* ==========================================================================
+           10. EXPERIENCE SECTION (TIMELINE)
+           ========================================================================== */
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            background: var(--border);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 2.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -4px;
+            top: 4px;
+            width: 9px;
+            height: 9px;
+            background: var(--bg);
+            border: 2px solid var(--accent);
+            border-radius: 50%;
+        }
+
+        .timeline-year {
+            font-family: var(--font-display);
+            font-size: 0.8rem;
+            color: var(--accent);
+            margin-bottom: 0.3rem;
+        }
+
+        .timeline-role {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .timeline-company {
+            font-size: 0.9rem;
+            color: var(--muted);
+            margin-bottom: 0.8rem;
+        }
+
+        .timeline-desc {
+            font-size: 0.9rem;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        /* ==========================================================================
+           11. CONTACT SECTION
+           ========================================================================== */
+        .contact-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 4rem 2rem;
+            border-radius: 4px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
+
+        .contact-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .contact-desc {
+            color: var(--muted);
+            max-width: 600px;
+            margin: 0 auto 2.5rem auto;
+            font-size: 1.05rem;
+        }
+
+        .contact-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+        .social-link {
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            color: var(--muted);
+            letter-spacing: 1px;
+            transition: var(--transition-smooth);
+        }
+
+        .social-link:hover {
+            color: var(--accent);
+        }
+
+        /* ==========================================================================
+           12. FOOTER
+           ========================================================================== */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 3rem 0;
+            background: var(--bg);
+        }
+
+        .footer-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .footer-brand {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .footer-nav {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .footer-copy {
+            font-size: 0.8rem;
+            color: var(--muted);
+            width: 100%;
+            text-align: center;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 1.5rem;
+        }
+
+        /* Modal Video Preview */
+        .modal {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition-smooth);
+            padding: 2rem;
+        }
+
+        .modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-content {
+            width: 100%;
+            max-width: 900px;
+            aspect-ratio: 16/9;
+            background: #000;
+            position: relative;
+            border: 1px solid var(--border);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            font-family: var(--font-display);
+        }
+
+        /* ==========================================================================
+           13. RESPONSIVE MEDIA QUERIES
+           ========================================================================== */
+        @media (max-width: 992px) {
+            .hero-grid, .about-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .hero-content {
+                text-align: center;
+            }
+
+            .hero-subtitle {
+                margin: 0 auto 2rem auto;
+            }
+
+            .hero-ctas {
+                justify-content: center;
+            }
+
+            .camera-frame-wrapper {
+                max-width: 450px;
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-menu {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 80%;
+                max-width: 300px;
+                height: 100vh;
+                background: var(--surface);
+                border-left: 1px solid var(--border);
+                flex-direction: column;
+                justify-content: center;
+                gap: 2rem;
+                transition: var(--transition-smooth);
+                z-index: 100;
+            }
+
+            .nav-menu.active {
+                right: 0;
+            }
+
+            .nav-status {
+                display: none;
+            }
+
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-grid"></div>
+    <canvas id="particles"></canvas>
+
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <span class="logo-dot"></span> ASIF EDITS
+            </a>
+
+            <div class="nav-status mono">
+                <span class="status-dot"></span> AVAILABLE FOR WORK
+            </div>
+
+            <ul class="nav-menu mono" id="nav-menu">
+                <li><a href="#work" class="nav-link">WORK</a></li>
+                <li><a href="#showreel" class="nav-link">SHOWREEL</a></li>
+                <li><a href="#about" class="nav-link">ABOUT</a></li>
+                <li><a href="#experience" class="nav-link">EXPERIENCE</a></li>
+                <li><a href="#contact" class="nav-link">CONTACT</a></li>
+            </ul>
+
+            <a href="#contact" class="btn btn-primary mono" style="display: none;">LET'S TALK</a>
+
+            <button class="hamburger" id="hamburger" aria-label="Toggle Navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <section class="hero" id="hero">
+        <div class="container hero-grid">
+            <div class="hero-content reveal">
+                <div class="hero-badge mono">
+                    <span>●</span> CREATIVE REEL 2026
+                </div>
+                <h1 class="hero-title">ASIF MAHMUD</h1>
+                <p class="hero-subtitle">VIDEO EDITOR & MOTION DESIGNER</p>
+                <p style="color: var(--muted); margin-bottom: 2rem; font-size: 1.05rem;">"I turn raw footage into stories worth watching."</p>
+                <div class="hero-ctas">
+                    <a href="#work" class="btn btn-primary mono">EXPLORE WORK</a>
+                    <a href="#showreel" class="btn btn-outline mono">WATCH SHOWREEL</a>
+                </div>
+            </div>
+
+            <div class="hero-image reveal">
+                <div class="camera-frame-wrapper">
+                    <div class="camera-frame">
+                        <img src="Formal Photo.jpg" alt="Asif Mahmud - Professional Video Editor">
+                        <div class="hud-overlay mono">
+                            <div class="hud-top">
+                                <div class="hud-rec">
+                                    <span class="hud-rec-dot"></span> REC
+                                </div>
+                                <div>4K 60FPS</div>
+                            </div>
+                            <div class="hud-corners"></div>
+                            <div class="hud-bottom">
+                                <div>F2.8</div>
+                                <div>1/120s</div>
+                                <div>ISO 800</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding" id="work">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag mono">// PORTFOLIO</span>
+                <h2 class="section-title">SELECTED WORK</h2>
+            </div>
+
+            <div class="portfolio-grid">
+                <div class="project-card reveal" data-video="https://www.youtube.com/embed/dQw4w9WgXcQ">
+                    <div class="project-thumb">
+                        <img src="https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&w=800&q=80" alt="Cinematic Edit Thumbnail">
+                        <div class="project-overlay">
+                            <div class="play-btn">▶</div>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <div class="project-meta mono">
+                            <span>01 — COMMERCIAL</span>
+                            <span>2026</span>
+                        </div>
+                        <h3 class="project-title">CINEMATIC EDIT</h3>
+                        <p class="project-desc">High-pace cinematic commercial cut focused on dynamic transitions, precise pacing, and atmospheric sound design.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">Premiere Pro</span>
+                            <span class="tech-tag">DaVinci Resolve</span>
+                            <span class="tech-tag">Sound Design</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card reveal" data-video="https://www.youtube.com/embed/dQw4w9WgXcQ">
+                    <div class="project-thumb">
+                        <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=800&q=80" alt="Social Media Campaign Thumbnail">
+                        <div class="project-overlay">
+                            <div class="play-btn">▶</div>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <div class="project-meta mono">
+                            <span>02 — SHORT FORM</span>
+                            <span>2025</span>
+                        </div>
+                        <h3 class="project-title">SOCIAL MEDIA CAMPAIGN</h3>
+                        <p class="project-desc">Engaging short-form videos tailored for Reels and TikTok, optimizing viewer retention with kinetic typography.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">After Effects</span>
+                            <span class="tech-tag">Short Form</span>
+                            <span class="tech-tag">Motion Graphics</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card reveal" data-video="https://www.youtube.com/embed/dQw4w9WgXcQ">
+                    <div class="project-thumb">
+                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80" alt="Motion Design Thumbnail">
+                        <div class="project-overlay">
+                            <div class="play-btn">▶</div>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <div class="project-meta mono">
+                            <span>03 — ANIMATION</span>
+                            <span>2025</span>
+                        </div>
+                        <h3 class="project-title">MOTION DESIGN REEL</h3>
+                        <p class="project-desc">Complex 2D/3D title sequences, visual overlays, and lower-thirds created for a futuristic tech brand identity.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">After Effects</span>
+                            <span class="tech-tag">Illustrator</span>
+                            <span class="tech-tag">VFX</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card reveal" data-video="https://www.youtube.com/embed/dQw4w9WgXcQ">
+                    <div class="project-thumb">
+                        <img src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=800&q=80" alt="YouTube Edit Thumbnail">
+                        <div class="project-overlay">
+                            <div class="play-btn">▶</div>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <div class="project-meta mono">
+                            <span>04 — CONTENT</span>
+                            <span>2025</span>
+                        </div>
+                        <h3 class="project-title">YOUTUBE ESSAY EDIT</h3>
+                        <p class="project-desc">Story-driven long-form content edit featuring custom motion assets, visual storytelling, and seamless audio mixing.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">Premiere Pro</span>
+                            <span class="tech-tag">Photoshop</span>
+                            <span class="tech-tag">Storytelling</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card reveal" data-video="https://www.youtube.com/embed/dQw4w9WgXcQ">
+                    <div class="project-thumb">
+                        <img src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=800&q=80" alt="Brand Film Thumbnail">
+                        <div class="project-overlay">
+                            <div class="play-btn">▶</div>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <div class="project-meta mono">
+                            <span>05 — COMMERCIAL</span>
+                            <span>2024</span>
+                        </div>
+                        <h3 class="project-title">BRAND FILM</h3>
+                        <p class="project-desc">A documentary-style brand film highlighting craft, passion, and vision through delicate color grading and interview assembly.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">DaVinci Resolve</span>
+                            <span class="tech-tag">Color Grading</span>
+                            <span class="tech-tag">Premiere Pro</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding" id="showreel" style="background: var(--surface-light);">
+        <div class="container">
+            <div class="section-header reveal" style="text-align: center;">
+                <span class="section-tag mono">// VISUAL DEMO</span>
+                <h2 class="section-title">SHOWREEL 2026</h2>
+                <p style="color: var(--muted); max-width: 600px; margin: 1rem auto 0 auto;">A selection of my latest edits, motion work and visual storytelling.</p>
+            </div>
+
+            <div class="showreel-box reveal">
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=0" title="Asif Mahmud Showreel" allowfullscreen></iframe>
+                </div>
+                <div class="monitor-bar mono">
+                    <div><span>●</span> WATCH REEL</div>
+                    <div>STATUS: ACTIVE</div>
+                    <div>00:00 / 02:45</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding" id="about">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-text reveal">
+                    <span class="section-tag mono">// ABOUT ME</span>
+                    <h2 class="section-title" style="margin-bottom: 1.5rem;">CRAFTING ENGAGING VISUAL STORIES</h2>
+                    <p>I transform raw footage into engaging visual stories. My work combines cinematic editing, motion graphics, sound design and visual storytelling to create content that captures attention.</p>
+                    <p>Whether it's high-energy commercial cuts, intricate YouTube video essays, or viral short-form social edits, I focus on narrative flow and emotional resonance.</p>
+                </div>
+
+                <div class="stats-grid reveal">
+                    <div class="stat-card">
+                        <span class="stat-number mono" data-target="5">05+</span>
+                        <span class="stat-label mono">YEARS EXPERIENCE</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number mono" data-target="100">100+</span>
+                        <span class="stat-label mono">PROJECTS COMPLETED</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number mono" data-target="30">30+</span>
+                        <span class="stat-label mono">HAPPY CLIENTS</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number mono" data-target="10">10M+</span>
+                        <span class="stat-label mono">TOTAL VIEWS</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding" style="background: var(--surface);">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag mono">// TOOLKIT</span>
+                <h2 class="section-title">SKILLS & SOFTWARE</h2>
+            </div>
+
+            <div class="skills-container reveal">
+                <div class="skill-card"><span>⚡</span> Adobe Premiere Pro</div>
+                <div class="skill-card"><span>⚡</span> Adobe After Effects</div>
+                <div class="skill-card"><span>⚡</span> DaVinci Resolve</div>
+                <div class="skill-card"><span>⚡</span> Adobe Photoshop</div>
+                <div class="skill-card"><span>⚡</span> Adobe Illustrator</div>
+                <div class="skill-card"><span>⚡</span> Motion Graphics</div>
+                <div class="skill-card"><span>⚡</span> Color Grading</div>
+                <div class="skill-card"><span>⚡</span> Sound Design</div>
+                <div class="skill-card"><span>⚡</span> Short Form Editing</div>
+                <div class="skill-card"><span>⚡</span> Long Form Editing</div>
+                <div class="skill-card"><span>⚡</span> YouTube Editing</div>
+                <div class="skill-card"><span>⚡</span> Commercial Editing</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag mono">// CAPABILITIES</span>
+                <h2 class="section-title">WHAT I DO</h2>
+            </div>
+
+            <div class="services-grid">
+                <div class="service-card reveal">
+                    <span class="service-num mono">01</span>
+                    <h3 class="service-title">VIDEO EDITING</h3>
+                    <p class="service-desc">Complete post-production services including rhythm assembly, narrative structuring, and polished final delivery.</p>
+                </div>
+
+                <div class="service-card reveal">
+                    <span class="service-num mono">02</span>
+                    <h3 class="service-title">MOTION GRAPHICS</h3>
+                    <p class="service-desc">Dynamic 2D/3D title sequences, kinetic typography, lower-thirds, and visual asset animations.</p>
+                </div>
+
+                <div class="service-card reveal">
+                    <span class="service-num mono">03</span>
+                    <h3 class="service-title">YOUTUBE EDITING</h3>
+                    <p class="service-desc">Retention-focused editing designed to keep viewers hooked with pacing, graphic callouts, and audio design.</p>
+                </div>
+
+                <div class="service-card reveal">
+                    <span class="service-num mono">04</span>
+                    <h3 class="service-title">SHORT FORM CONTENT</h3>
+                    <p class="service-desc">Fast-paced, high-engagement vertical edits optimized for Instagram Reels, YouTube Shorts, and TikTok.</p>
+                </div>
+
+                <div class="service-card reveal">
+                    <span class="service-num mono">05</span>
+                    <h3 class="service-title">COMMERCIAL EDITING</h3>
+                    <p class="service-desc">High-impact brand promos and advertising cuts tailored to communicate message and value swiftly.</p>
+                </div>
+
+                <div class="service-card reveal">
+                    <span class="service-num mono">06</span>
+                    <h3 class="service-title">COLOR GRADING</h3>
+                    <p class="service-desc">Cinematic color correction and stylized look development using DaVinci Resolve for consistent mood.</p>
+                </div>
+
+                <div class="service-card reveal">
+                    <span class="service-num mono">07</span>
+                    <h3 class="service-title">SOUND DESIGN</h3>
+                    <p class="service-desc">Layered audio mixing, sound effect creation, foley, and vocal cleaning for immersive experiences.</p>
+                </div>
+
+                <div class="service-card reveal">
+                    <span class="service-num mono">08</span>
+                    <h3 class="service-title">SOCIAL MEDIA CONTENT</h3>
+                    <p class="service-desc">Scalable content creation packages tailored for brands looking to maintain a cohesive visual identity online.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding" id="experience" style="background: var(--surface-light);">
+        <div class="container">
+            <div class="section-header reveal" style="text-align: center;">
+                <span class="section-tag mono">// CAREER PATH</span>
+                <h2 class="section-title">EXPERIENCE</h2>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-item reveal">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2023 — PRESENT</div>
+                    <h3 class="timeline-role">SENIOR VIDEO EDITOR</h3>
+                    <div class="timeline-company">Freelance / Digital Agencies</div>
+                    <p class="timeline-desc">Leading post-production for high-profile clients, managing full post workflows, color grading, and motion graphics integration for international brands.</p>
+                </div>
+
+                <div class="timeline-item reveal">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2021 — 2023</div>
+                    <h3 class="timeline-role">MOTION GRAPHICS SPECIALIST</h3>
+                    <div class="timeline-company">Creative Studio</div>
+                    <p class="timeline-desc">Designed graphic assets, logo reveals, lower thirds, and promo videos for corporate clients and YouTube content creators.</p>
+                </div>
+
+                <div class="timeline-item reveal">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2019 — 2021</div>
+                    <h3 class="timeline-role">JUNIOR VIDEO EDITOR</h3>
+                    <div class="timeline-company">Media Agency</div>
+                    <p class="timeline-desc">Assisted in rough cutting, sound balancing, organizing camera media, and producing short-form content for social platforms.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding" id="contact">
+        <div class="container">
+            <div class="contact-box reveal">
+                <span class="section-tag mono">// GET IN TOUCH</span>
+                <h2 class="contact-title">LET'S CREATE SOMETHING<br><span class="accent-text">WORTH WATCHING.</span></h2>
+                <p class="contact-desc">Have a project in mind? Let's turn your footage into something people remember.</p>
+                
+                <div class="contact-buttons">
+                    <a href="mailto:asif@example.com" class="btn btn-primary mono">START A PROJECT</a>
+                    <a href="mailto:asif@example.com" class="btn btn-outline mono">EMAIL ME</a>
+                </div>
+
+                <div class="social-links mono">
+                    <a href="#" class="social-link">INSTAGRAM</a>
+                    <a href="#" class="social-link">YOUTUBE</a>
+                    <a href="#" class="social-link">LINKEDIN</a>
+                    <a href="#" class="social-link">BEHANCE</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container footer-container">
+            <div class="footer-brand">
+                ASIF MAHMUD <span style="color: var(--muted); font-weight: 400; font-size: 0.85rem;">— VIDEO EDITOR & MOTION DESIGNER</span>
+            </div>
+
+            <div class="footer-nav mono">
+                <a href="#work" class="nav-link">WORK</a>
+                <a href="#about" class="nav-link">ABOUT</a>
+                <a href="#experience" class="nav-link">EXPERIENCE</a>
+                <a href="#contact" class="nav-link">CONTACT</a>
+            </div>
+
+            <div class="footer-copy mono">
+                © 2026 ASIF MAHMUD. ALL RIGHTS RESERVED.
+            </div>
+        </div>
+    </footer>
+
+    <div class="modal" id="videoModal">
+        <div class="modal-content">
+            <span class="modal-close" id="modalClose">&times; CLOSE</span>
+            <iframe id="modalIframe" src="" width="100%" height="100%" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            /* 1. Mobile Menu Toggle */
+            const hamburger = document.getElementById('hamburger');
+            const navMenu = document.getElementById('nav-menu');
+
+            hamburger.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+            });
+
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    navMenu.classList.remove('active');
+                });
+            });
+
+            /* 2. Navbar Background Change on Scroll */
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+
+            /* 3. Scroll Reveal Animations */
+            const reveals = document.querySelectorAll('.reveal');
+
+            const revealOnScroll = () => {
+                const windowHeight = window.innerHeight;
+                reveals.forEach(element => {
+                    const elementTop = element.getBoundingClientRect().top;
+                    const elementVisible = 100;
+
+                    if (elementTop < windowHeight - elementVisible) {
+                        element.classList.add('active');
+                    }
+                });
+            };
+
+            window.addEventListener('scroll', revealOnScroll);
+            revealOnScroll(); // Trigger initial check
+
+            /* 4. Canvas Particle System Background */
+            const canvas = document.getElementById('particles');
+            const ctx = canvas.getContext('2d');
+
+            let particlesArray = [];
+            const numberOfParticles = 40;
+
+            const resizeCanvas = () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            };
+
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 2 + 0.5;
+                    this.speedX = (Math.random() - 0.5) * 0.3;
+                    this.speedY = (Math.random() - 0.5) * 0.3;
+                    this.opacity = Math.random() * 0.5 + 0.1;
+                }
+
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+
+                    if (this.x > canvas.width) this.x = 0;
+                    if (this.x < 0) this.x = canvas.width;
+                    if (this.y > canvas.height) this.y = 0;
+                    if (this.y < 0) this.y = canvas.height;
+                }
+
+                draw() {
+                    ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            const initParticles = () => {
+                particlesArray = [];
+                for (let i = 0; i < numberOfParticles; i++) {
+                    particlesArray.push(new Particle());
+                }
+            };
+
+            const animateParticles = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particlesArray.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+                requestAnimationFrame(animateParticles);
+            };
+
+            initParticles();
+            animateParticles();
+
+            /* 5. Project Video Modal Handler */
+            const projectCards = document.querySelectorAll('.project-card');
+            const videoModal = document.getElementById('videoModal');
+            const modalIframe = document.getElementById('modalIframe');
+            const modalClose = document.getElementById('modalClose');
+
+            projectCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const videoSrc = card.getAttribute('data-video');
+                    if (videoSrc) {
+                        modalIframe.src = videoSrc + "?autoplay=1";
+                        videoModal.classList.add('active');
+                    }
+                });
+            });
+
+            const closeModal = () => {
+                videoModal.classList.remove('active');
+                modalIframe.src = "";
+            };
+
+            modalClose.addEventListener('click', closeModal);
+            videoModal.addEventListener('click', (e) => {
+                if (e.target === videoModal) {
+                    closeModal();
+                }
+            });
+
+        });
+    </script>
+</body>
+</html>
